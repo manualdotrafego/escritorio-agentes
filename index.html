@@ -152,7 +152,7 @@ cv.addEventListener('click', e=>{ const r=cv.getBoundingClientRect(), x=(e.clien
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function fmtT(t){ return t? new Date(t*1000).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : ''; }
 function dur(r){ const e=(r.fim||Date.now()/1000)-(r.inicio||0); return e<60?Math.round(e)+'s':Math.round(e/60)+'min'; }
-function offlineBox(){ return online ? '' : `<div class="off">Servidor local offline. No Mac, rode <b>~/bin/escritorio.sh</b> (ou <b>python3 ~/Downloads/criativo-gen/escritorio/server.py</b>) e recarregue. Esta página aceita <b>?api=http://ip:8765</b> para outro endereço.</div>`; }
+function offlineBox(){ return online ? '' : `<div class="off">Servidor local offline. No Mac, rode <b>~/bin/escritorio.sh</b> (ou <b>python3 ~/Downloads/criativo-gen/escritorio/server.py</b>) e recarregue. Se o navegador bloquear a conexão com localhost, abra a cópia local: <a href="http://localhost:8765" style="color:#8ec5ff">http://localhost:8765</a>. Outro endereço: <b>?api=http://ip:8765</b>.</div>`; }
 function renderPanel(){
   const a=AG.find(x=>x.id===sel);
   if(!a){ document.getElementById('panel').innerHTML = offlineBox()+`<h2>Clique num agente</h2><div class="cargo">Rê renderiza criativos, Tico baixa TikToks e Mina minera bases novas.</div><div class="hint">Cada agente tem fila própria: tarefas do mesmo agente rodam uma de cada vez. Use + e − para dar zoom.</div>`; return; }

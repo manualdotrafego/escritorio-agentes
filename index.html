@@ -80,14 +80,14 @@ const COUCH= ['..bbbbbbbbbbbbbbbbbb..','.bBBBBBBBBBBBBBBBBBBb.','bBBBBBBBBBBBBBB
 const BOX  = ['pppppppp','pPPPPPPp','pP.ll.Pp','pPPPPPPp','pPPPPPPp','pppppppp'], BPAL={p:'#8b5a2b',P:'#b67a3c',l:'#e0c9a6'};
 const PIC  = ['gggggggggg','gssssssssg','gsSSsyyssg','gsSSSyyssg','gsbbbbbbsg','gggggggggg'], PiPAL={g:'#c9a400',s:'#87ceeb',S:'#fff',y:'#ffd166',b:'#3f9d4a'};
 
-function drawFloorWood(x,y,w,h){ for(let py=y;py<y+h;py+=T) for(let pxx=x;pxx<x+w;pxx+=T){ const k=((pxx/T)|0)%3; px(pxx,py,T,T,k==0?'#8a5a2b':k==1?'#93612f':'#84552a'); px(pxx+T-1,py,1,T,'#6e4520'); if(((py/T)+(pxx/T))%4==0) px(pxx+2,py+7,6,1,'#6e4520'); } }
+function drawFloorWood(x,y,w,h){ for(let py=y;py<y+h;py+=T) for(let pxx=x;pxx<x+w;pxx+=T){ const k=((pxx/T)|0)%3; px(pxx,py,T,T,k==0?'#b98150':k==1?'#c08858':'#b37a48'); px(pxx+T-1,py,1,T,'#8f5f33'); px(pxx,py+T-1,T,1,'#a86f3e'); if(((py/T)+(pxx/T))%5==0) px(pxx+3,py+6,7,1,'#8f5f33'); } }
 function drawFloorTile(x,y,w,h){ for(let py=y;py<y+h;py+=T) for(let pxx=x;pxx<x+w;pxx+=T){ px(pxx,py,T,T,((pxx+py)/T)%2?'#d9cfb8':'#cfc4aa'); px(pxx,py,T,1,'#bfb39a'); px(pxx,py,1,T,'#bfb39a'); } }
 function drawFloorCarpet(x,y,w,h){ for(let py=y;py<y+h;py+=T) for(let pxx=x;pxx<x+w;pxx+=T){ px(pxx,py,T,T,((pxx+py)/T)%2?'#2f4f7f':'#2a4772'); px(pxx+4,py+4,2,2,'#3b5f94'); px(pxx+10,py+10,2,2,'#3b5f94'); } }
-function drawWall(x,y,w){ px(x,y,w,20,'#4b4a5a'); px(x,y+20,w,4,'#33323f'); }
+function drawWall(x,y,w){ px(x,y,w,20,'#6f6c82'); for(let i=0;i<w;i+=16) px(x+i,y+6,15,1,'#66637a'); px(x,y+20,w,4,'#3e3c4d'); }
 function drawShelf(x,y){ px(x,y,48,28,'#6b4222'); px(x+2,y+2,44,11,'#3d2412'); px(x+2,y+15,44,11,'#3d2412'); const cols=['#c0392b','#2b6cff','#3ddc84','#ffd166','#9b59b6','#e67e22','#4fc3f7'];
   for(let i=0;i<9;i++){ px(x+4+i*4.5,y+4,3,8,cols[i%7]); px(x+4+i*4.5,y+17,3,8,cols[(i+3)%7]); } px(x,y+28,48,2,'#2b1a0c'); }
 function drawDesk(m, a, busy){ px(m.x,m.y,64,26,'#a0693a'); px(m.x,m.y,64,3,'#c48a55'); px(m.x,m.y+23,64,3,'#7a4a22'); px(m.x+2,m.y+26,4,10,'#5a3416'); px(m.x+58,m.y+26,4,10,'#5a3416');
-  spr(m.x+22,m.y-2,MON, busy?MPAL2:MPAL); px(m.x+44,m.y+8,10,6,'#e6e6ee'); px(m.x+8,m.y+12,8,4,'#1c1e2a'); spr(m.x+28,m.y+32,CHAIR,CPAL); }
+  spr(m.x+22,m.y-2,MON, busy?MPAL2:MPAL); px(m.x+44,m.y+8,10,6,'#e6e6ee'); px(m.x+8,m.y+12,8,4,'#1c1e2a'); px(m.x+46,m.y+16,12,5,'#7a4a22'); px(m.x+50,m.y+18,4,1,'#c48a55'); spr(m.x+28,m.y+50,CHAIR,CPAL); }
 
 function drawRoom(){
   drawFloorWood(0,24,288,296); drawFloorTile(288,24,192,144); drawFloorCarpet(288,168,192,152);
@@ -142,8 +142,9 @@ function frame(){
   }
   requestAnimationFrame(frame);
 }
-function setZoom(z){ zoom=Math.max(1,Math.min(4,z)); cv.style.width=(W*zoom)+'px'; cv.style.height=(H*zoom)+'px'; localStorage.setItem('zoom',zoom); }
-document.getElementById('zin').onclick=()=>setZoom(zoom+1); document.getElementById('zout').onclick=()=>setZoom(zoom-1);
+function fitZoom(){ const w=document.getElementById('wrap').clientWidth-24, h=document.getElementById('wrap').clientHeight-24; return Math.max(1, Math.floor(Math.min(w/W, h/H)*2)/2); }
+function setZoom(z){ zoom=Math.max(1,Math.min(4,z)); cv.style.width=(W*zoom)+'px'; cv.style.height=(H*zoom)+'px'; }
+document.getElementById('zin').onclick=()=>setZoom(zoom+0.5); document.getElementById('zout').onclick=()=>setZoom(zoom-0.5); window.addEventListener('resize',()=>setZoom(fitZoom()));
 cv.addEventListener('click', e=>{ const r=cv.getBoundingClientRect(), x=(e.clientX-r.left)*W/r.width, y=(e.clientY-r.top)*H/r.height;
   for(const a of AG){ const p=pos[a.id]; if(p && x>p.x-8 && x<p.x+24 && y>p.y-28 && y<p.y+30){ sel=a.id; renderPanel(); return; } } });
 
@@ -199,7 +200,7 @@ async function poll(){
     if(sig!==lastSig && !document.activeElement.matches('input,textarea,select')){ lastSig=sig; renderPanel(); }
   }catch(e){ const was=online; online=false; const h=document.getElementById('hdr'); h.className='st off'; h.textContent='servidor local offline (rode ~/bin/escritorio.sh)'; if(was||!AG.length){ if(!AG.length) AG=DEMO_AG; renderPanel(); } }
 }
-(async()=>{ setZoom(parseInt(localStorage.getItem('zoom')||'2')); await poll(); if(!AG.length){ AG=DEMO_AG; renderPanel(); } frame(); setInterval(poll,2000); })();
+(async()=>{ setZoom(fitZoom()); await poll(); if(!AG.length){ AG=DEMO_AG; renderPanel(); } frame(); setInterval(poll,2000); })();
 </script>
 </body>
 </html>
